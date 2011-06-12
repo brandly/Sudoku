@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	
+<title>Sudoku</title>
+
+<script type="text/javascript" src="jquery-1.6.1.min.js"></script>
+<script type="text/javascript" src="sudoku.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/css_reset.css" />
+
+
+<script type="text/javascript">
+	function startEngine(){
+		var sudoku = 	[
+					[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0]
+				];
+
+		sudoku = getPuzzle(sudoku);
+		sudoku = solve(sudoku);
+		printPuzzle(sudoku);
+	};
+</script>
+<style type="text/css">
+body{font-family: sans-serif;}
+table tr td input {width:20px; height: 20px;padding-left: 2px; text-align:center;border:solid 1px #cccccc; background-color:transparent; padding:0pt;}
+.c4, .c7 {border-left: 3px #3B5998 solid;}
+.r4, .r7 {border-top: 3px #3B5998 solid;}
+#container{width:250px;margin-left: auto; margin-right: auto;}
+#header{margin-left: auto; margin-right: auto; height: 55px;}
+#topBar{background-color: #3B5998;height: 55px;left: 0;position: absolute;width: 100%;z-index: -1;}
+#content{background-color: #FFF; padding: 15px 0 5px 0;}
+/*table.sudoku{margin-left: auto; margin-right: auto;}*/
+h1 {font-size: 2.5em; color:#FFF; padding-top: 10px; padding-bottom: 30px;}
+
+input.solve{border:0;color: #FFF; font-size: 1.5em; height: 32px;}
+/*fb*/
+.uiButtonConfirm {
+background-color: #5B74A8;
+background-position: 0 -48px;
+border-color: #29447E #29447E #1A356E;
+}
+
+</style>
+</head>
+<body>
+	<div id="topBar"></div>
+	<div id="container">
+		<div id="header"><h1>sudoku</h1></div>
+		<div id="content">
+			<p>Insert known values and click solve!</p>
+			<br />
+			<table class="sudoku" border="0" cellpadding="0" cellspacing="0">
+				<tbody>
+					<tr>
+						<td id="1"><input type="text" maxlength="1" /></td>
+						<td id="2" class="c2 r1 b1"><input type="text" maxlength="1" /></td>
+						<td id="3" class="c3 r1 b1"><input type="text" maxlength="1" /></td>
+					
+						<td id="4" class="c4 r1 b2"><input type="text" maxlength="1" /></td>
+						<td id="5" class="c5 r1 b2"><input type="text" maxlength="1" /></td>
+						<td id="6" class="c6 r1 b2"><input type="text" maxlength="1" /></td>
+					
+						<td id="7" class="c7 r1 b3"><input type="text" maxlength="1" /></td>
+						<td id="8" class="c8 r1 b3"><input type="text" maxlength="1" /></td>
+						<td id="9" class="c9 r1 b3"><input type="text" maxlength="1" /></td>
+					</tr>
+					
+					<tr>
+						<td id="10" class="c1 r2 b1"><input type="text" maxlength="1" /></td>
+						<td id="11" class="c2 r2 b1"><input type="text" maxlength="1" /></td>
+						<td id="12" class="c3 r2 b1"><input type="text" maxlength="1" /></td>
+					
+						<td id="13" class="c4 r2 b2"><input type="text" maxlength="1" /></td>
+						<td id="14" class="c5 r2 b2"><input type="text" maxlength="1" /></td>
+						<td id="15" class="c6 r2 b2"><input type="text" maxlength="1" /></td>
+					
+						<td id="16" class="c7 r2 b3"><input type="text" maxlength="1" /></td>
+						<td id="17" class="c8 r2 b3"><input type="text" maxlength="1" /></td>
+						<td id="18" class="c9 r2 b3"><input type="text" maxlength="1" /></td>
+					</tr>
+					
+					<tr>
+						<td id="19" class="c1 r3 b1"><input type="text" maxlength="1" /></td>
+						<td id="20" class="c2 r3 b1"><input type="text" maxlength="1" /></td>
+						<td id="21" class="c3 r3 b1"><input type="text" maxlength="1" /></td>
+					
+						<td id="22" class="c4 r3 b2"><input type="text" maxlength="1" /></td>
+						<td id="23" class="c5 r3 b2"><input type="text" maxlength="1" /></td>
+						<td id="24" class="c6 r3 b2"><input type="text" maxlength="1" /></td>
+					
+						<td id="25" class="c7 r3 b3"><input type="text" maxlength="1" /></td>
+						<td id="26" class="c8 r3 b3"><input type="text" maxlength="1" /></td>
+						<td id="27" class="c9 r3 b3"><input type="text" maxlength="1" /></td>
+					</tr>
+					<!-- ----------------------------------------------------------- -->
+					<tr>
+						<td id="28" class="c1 r4 b4"><input type="text" maxlength="1" /></td>
+						<td id="29" class="c2 r4 b4"><input type="text" maxlength="1" /></td>
+						<td id="30" class="c3 r4 b4"><input type="text" maxlength="1" /></td>
+					
+						<td id="31" class="c4 r4 b5"><input type="text" maxlength="1" /></td>
+						<td id="32" class="c5 r4 b5"><input type="text" maxlength="1" /></td>
+						<td id="33" class="c6 r4 b5"><input type="text" maxlength="1" /></td>
+					
+						<td id="34" class="c7 r4 b6"><input type="text" maxlength="1" /></td>
+						<td id="35" class="c8 r4 b6"><input type="text" maxlength="1" /></td>
+						<td id="36" class="c9 r4 b6"><input type="text" maxlength="1" /></td>
+					</tr>
+					
+					<tr>
+						<td id="37" class="c1 r5 b4"><input type="text" maxlength="1" /></td>
+						<td id="38" class="c2 r5 b4"><input type="text" maxlength="1" /></td>
+						<td id="39" class="c3 r5 b4"><input type="text" maxlength="1" /></td>
+						
+						<td id="40" class="c4 r5 b5"><input type="text" maxlength="1" /></td>
+						<td id="41" class="c5 r5 b5"><input type="text" maxlength="1" /></td>
+						<td id="42" class="c6 r5 b5"><input type="text" maxlength="1" /></td>
+					
+						<td id="43" class="c7 r5 b6"><input type="text" maxlength="1" /></td>
+						<td id="44" class="c8 r5 b6"><input type="text" maxlength="1" /></td>
+						<td id="45" class="c9 r5 b6"><input type="text" maxlength="1" /></td>
+					</tr>
+					
+					<tr>
+						<td id="46" class="c1 r6 b4"><input type="text" maxlength="1" /></td>
+						<td id="47" class="c2 r6 b4"><input type="text" maxlength="1" /></td>
+						<td id="48" class="c3 r6 b4"><input type="text" maxlength="1" /></td>
+					
+						<td id="49" class="c4 r6 b5"><input type="text" maxlength="1" /></td>
+						<td id="50" class="c5 r6 b5"><input type="text" maxlength="1" /></td>
+						<td id="51" class="c6 r6 b5"><input type="text" maxlength="1" /></td>
+					
+						<td id="52" class="c7 r6 b6"><input type="text" maxlength="1" /></td>
+						<td id="53" class="c8 r6 b6"><input type="text" maxlength="1" /></td>
+						<td id="54" class="c9 r6 b6"><input type="text" maxlength="1" /></td>
+					</tr>
+					<!-- ----------------------------------------------------------- -->
+					<tr>
+						<td id="55" class="c1 r7 b7"><input type="text" maxlength="1" /></td>
+						<td id="56" class="c2 r7 b7"><input type="text" maxlength="1" /></td>
+						<td id="57" class="c3 r7 b7"><input type="text" maxlength="1" /></td>
+					
+						<td id="58" class="c4 r7 b8"><input type="text" maxlength="1" /></td>
+						<td id="59" class="c5 r7 b8"><input type="text" maxlength="1" /></td>
+						<td id="60" class="c6 r7 b8"><input type="text" maxlength="1" /></td>
+					
+						<td id="61" class="c7 r7 b9"><input type="text" maxlength="1" /></td>
+						<td id="62" class="c8 r7 b9"><input type="text" maxlength="1" /></td>
+						<td id="63" class="c9 r7 b9"><input type="text" maxlength="1" /></td>
+					</tr>
+					
+					<tr>
+						<td id="64" class="c1 r8 b7"><input type="text" maxlength="1" /></td>
+						<td id="65" class="c2 r8 b7"><input type="text" maxlength="1" /></td>
+						<td id="66" class="c3 r8 b7"><input type="text" maxlength="1" /></td>
+						
+						<td id="67" class="c4 r8 b8"><input type="text" maxlength="1" /></td>
+						<td id="68" class="c5 r8 b8"><input type="text" maxlength="1" /></td>
+						<td id="69" class="c6 r8 b8"><input type="text" maxlength="1" /></td>
+					
+						<td id="70" class="c7 r8 b9"><input type="text" maxlength="1" /></td>
+						<td id="71" class="c8 r8 b9"><input type="text" maxlength="1" /></td>
+						<td id="72" class="c9 r8 b9"><input type="text" maxlength="1" /></td>
+					</tr>
+					
+					<tr>
+						<td id="73" class="c1 r9 b7"><input type="text" maxlength="1" /></td>
+						<td id="74" class="c2 r9 b7"><input type="text" maxlength="1" /></td>
+						<td id="75" class="c3 r9 b7"><input type="text" maxlength="1" /></td>
+					
+						<td id="76" class="c4 r9 b8"><input type="text" maxlength="1" /></td>
+						<td id="77" class="c5 r9 b8"><input type="text" maxlength="1" /></td>
+						<td id="78" class="c6 r9 b8"><input type="text" maxlength="1" /></td>
+					
+						<td id="79" class="c7 r9 b9"><input type="text" maxlength="1" /></td>
+						<td id="80" class="c8 r9 b9"><input type="text" maxlength="1" /></td>
+						<td id="81" class="c9 r9 b9"><input type="text" maxlength="1" /></td>
+					</tr>
+				</tbody>
+			</table>
+			<br />
+			<div class="solve"><input class="solve uiButtonConfirm" value="Solve" type="submit" onClick="startEngine();"/></div>
+		</div>
+	</div>
+</body>
+</html>
